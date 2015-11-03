@@ -110,6 +110,7 @@ jQuery(function($) {
 
 		var x, y = 0;
 		var constraints = [];
+		var no_kansai = [];
 		$field.find('tr').each(function() {
 			x = 0;
 			$(this).find('td').each(function() {
@@ -142,6 +143,8 @@ jQuery(function($) {
 					for ( i = 0; i < arr2.length; ++i) {
 						constraints.push(-arr2[i][0] + ' ' + (-arr2[i][1]) + ' 0');
 					}
+					// 関西解を除外（一部の場合のみ発動）
+					no_kansai.push(arr.join(' ')+' 0');
 					for ( num = 1; num <= max_num; ++num) {
 						neighbors = get_neighbors(x, y, num);
 						//もとから数字のないマスでは、隣接するマスのうち3マスに同じ数字が入ることはない
@@ -173,7 +176,11 @@ jQuery(function($) {
 			y++;
 		});
 		lap('立式');
-		Util.sat_solve(width * height * max_num, constraints, function(trues){
+		var first_constraints = constraints;
+		if(!$("#initial_kansai").is(':checked')){
+			first_constraints = constraints.concat(no_kansai);
+		}
+		Util.sat_solve(width * height * max_num, first_constraints , function(trues){
 			lap('初回ソルバー');
 
 			var table=[];
@@ -230,9 +237,10 @@ jQuery(function($) {
 				y++;
 			});
 			console.log(table);
-			if(kansai) return;
 			lap('出力');
 			//別解チェック
+			if(kansai) return;
+			if($("#bypass_unique").is(':checked')) return;
 			var arr=[];
 			for(i=0;i<trues.length; ++i){
 				arr.push(-trues[i]);

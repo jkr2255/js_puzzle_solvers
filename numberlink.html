@@ -32,10 +32,15 @@
        #indicator p{
        	margin: 0 0.5em;
        	}
+   		fieldset{
+   			margin: 10px 0;
+   		}
     </style>
   </head>
   <body>
-    <h1>ナンバーリンクソルバー</h1>
+    <h1>ナンバーリンクソルバー<a class="twitter-share-button"
+  href="https://twitter.com/intent/tweet">
+ツイート</a></h1>
     <div>
       <label>幅: <input type="number" id="width" value="10" min='2' /></label>
       ×
@@ -45,6 +50,13 @@
     <div>
       <table id="field"></table>
     </div>
+    <fieldset>
+    	<legend>詳細設定</legend>
+    	<input type="checkbox" id="bypass_unique" /> <label for="bypass_unique">別解チェックを省略する</label> 
+    	<small>なお、関西解が発生した場合、別解チェックはせずに終了します。</small><br />
+    	<input type="checkbox" id="initial_kansai" /> <label for="initial_kansai">関西解でも結果として表示する</label> 
+    	<small>作問中など、関西解でもとりあえず表示して欲しい場合におすすめです。なお、別解チェック時には関西解までチェックします。</small>
+    </fieldset>
     <div>
       <input type="button" value="計算開始" id='solve_btn' />
     </div>
@@ -59,7 +71,9 @@
     	<ul>
     		<li>たまに、全マスを使うこと自体を条件に入れている問題がありますが、そのような問題には<strong>対応していません</strong>。</li>
     		<li>別解がある場合も、別解については表示されません。また、関西解の場合にも別解の有無チェックは行いません。</li>
-    		<li>一意に解けない問題で、数字とは繋がらずに独立したループができることがあります。これらのループを取り除けば、結局は関西解になるので、あまり気にしないでください。</li>
+    		<li>一意に解けない問題で、数字とは繋がらずに独立したループができることがあります。これらのループを取り除けば、結局は関西解になるので、あまり気にしないでください
+    			（<a href="http://qiita.com/jkr_2255/items/0980d8e2e410d92338e8#%E5%A4%89%E5%BD%A2%E3%81%AE%E4%BB%A3%E5%84%9F">解説</a>）。
+    			</li>
     		<li>途中経過表示はほとんど行いません。また、ぶっ通しでJavaScriptを処理しているので、巨大な問題を処理した場合などは<strong>ブラウザごとフリーズする危険もあります</strong>。</li>
     	</ul>
     	<p>今後は、ブラウザのバックグラウンドで処理を行おうと考えています。なお、ご意見などありましたら、作者まで適当な連絡方法あるいは
@@ -79,5 +93,21 @@
     <script src="util.js" charset="UTF-8"></script>
     <script src="numberlink.js" charset="UTF-8"></script>
     <script src="minisat.js" charset="UTF-8" async='async'></script>
-  </body>
+	<script>window.twttr = (function(d, s, id) {
+	  var js, fjs = d.getElementsByTagName(s)[0],
+	    t = window.twttr || {};
+	  if (d.getElementById(id)) return t;
+	  js = d.createElement(s);
+	  js.id = id;
+	  js.src = "https://platform.twitter.com/widgets.js";
+	  fjs.parentNode.insertBefore(js, fjs);
+	 
+	  t._e = [];
+	  t.ready = function(f) {
+	    t._e.push(f);
+	  };
+	 
+	  return t;
+	}(document, "script", "twitter-wjs"));</script>
+	</body>
 </html>
