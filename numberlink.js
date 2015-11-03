@@ -57,6 +57,15 @@ jQuery(function($) {
 	});
 	// データ処理
 	$('#solve_btn').click(function() {
+		var start_time = $.now();
+		var checkpoint_time = start_time;
+		var lap_time;
+		function lap(text){
+			lap_time = $.now();
+			$indicator.append('<p>'+text+'：'+(lap_time-checkpoint_time)+'ミリ秒</p>');
+			checkpoint_time = lap_time;
+		}
+		var $indicator= $('#indicator');
 		//まずは数だけ数える
 		var nums = {};
 		var max_num = 0;
@@ -80,6 +89,7 @@ jQuery(function($) {
 		if (max_num == 0) {
 			alert('数字が1つもないので終了します。');
 		}
+		lap('条件チェック');
 		//次に、制約式を立てる
 		function pos2var(x, y, num) {
 			return ((y * width) + x) * max_num + num;
@@ -162,7 +172,10 @@ jQuery(function($) {
 			});
 			y++;
 		});
+		lap('立式');
 		Util.sat_solve(width * height * max_num, constraints, function(trues){
+			lap('初回ソルバー');
+
 			var table=[];
 			var kansai = false;
 			var x,y, i, num, flag;
@@ -218,6 +231,7 @@ jQuery(function($) {
 			});
 			console.log(table);
 			if(kansai) return;
+			lap('出力');
 			//別解チェック
 			var arr=[];
 			for(i=0;i<trues.length; ++i){
@@ -225,6 +239,7 @@ jQuery(function($) {
 			}
 			constraints.push(arr.join(' ')+' 0');
 			Util.sat_solve(width * height * max_num, constraints, function(trues){
+				lap('別解チェック');
 				alert(trues ? '別解があります。' : '一意解です。');
 			});
 		});
