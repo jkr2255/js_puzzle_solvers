@@ -27,42 +27,34 @@ Util = {
 		}
 		return ret;
 	},
-	// コールバックの形：function(trues, stdout, stderr)
+	// コールバックの形：function(trues,stdout,stderr)
 	//trues: UNSATのときはfalse
-	sat_solve : function(num_variables, constraints, callback) {
-		var solve_string = Module.cwrap('solve_string', 'string', ['string', 'int']);
-		var oldPrint = Module.print;
-		var oldPrintErr = Module.printErr;
-		var stderr = '';
-		var stdout = '';
-		var result;
-		Module['print'] = function(x) {
-			stdout += x + "\n";
-		}
-		Module['printErr'] = function(x) {
-			stderr += x + "\n";
-		}
-		try {
+	sat_solve : (function(){
+		var worker,callback;
+		return function(num_variables, constraints, callback_func) {
+			if(!worker){
+				worker = new Worker('minisat_worker.js');
+				worker.addEventListener('message',function(e){
+					var result = e.data.result;
+					var trues = false;
+					if(result) {
+						var result_arr = result.split(' ');
+						if(result_arr[0]==='SAT'){
+							trues = [];
+							for(var i=1 ; i<result_arr.length;++i){
+								if(+result_arr[i]>0){
+									trues.push(+result_arr[i]);
+								}
+							}
+						}
+					}
+					callback(trues, e.data.stdout, e.data.stderr);
+				},false);
+			}
 			var input = "p cnf " + num_variables + ' ' + constraints.length + '\n';
 			input += constraints.join('\n');
-			result = solve_string(input, input.length);
-		} catch(e) {
-			Module.printErr('Error: ' + e);
-		}
-		var trues = false;
-		if(result) {
-			var result_arr = result.split(' ');
-			if(result_arr[0]==='SAT'){
-				trues = [];
-				for(var i=1 ; i<result_arr.length;++i){
-					if(+result_arr[i]>0){
-						trues.push(+result_arr[i]);
-					}
-				}
-			}
-		}
-		callback(trues, stdout, stderr);
-		Module.print = oldPrint;
-		Module.printErr = oldPrintErr;
-	}
+			callback=callback_func;
+			worker.postMessage(input);
+		};
+	})()
 };

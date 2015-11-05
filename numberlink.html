@@ -69,14 +69,15 @@
     	</ol>
     	<p>という手順です。なお、いくつかの制約事項があります。</p>
     	<ul>
+    		<li>TypedArrayやWeb Workersといった技術を使うため、Internet Explorer 9以下など、古い環境では動きません。</li>
     		<li>たまに、全マスを使うこと自体を条件に入れている問題がありますが、そのような問題には<strong>対応していません</strong>。</li>
     		<li>別解がある場合も、別解については表示されません。また、関西解の場合にも別解の有無チェックは行いません。</li>
     		<li>一意に解けない問題で、数字とは繋がらずに独立したループができることがあります。これらのループを取り除けば、結局は関西解になるので、あまり気にしないでください
     			（<a href="http://qiita.com/jkr_2255/items/0980d8e2e410d92338e8#%E5%A4%89%E5%BD%A2%E3%81%AE%E4%BB%A3%E5%84%9F">解説</a>）。
     			</li>
-    		<li>途中経過表示はほとんど行いません。また、ぶっ通しでJavaScriptを処理しているので、巨大な問題を処理した場合などは<strong>ブラウザごとフリーズする危険もあります</strong>。</li>
+    		<li>途中経過表示はほとんど行いません。なお、バックグラウンド実行としましたので、実行中もブラウザ操作が可能です。</li>
     	</ul>
-    	<p>今後は、ブラウザのバックグラウンドで処理を行おうと考えています。なお、ご意見などありましたら、作者まで適当な連絡方法あるいは
+    	<p>ご意見などありましたら、作者まで適当な連絡方法あるいは
     		<a href="https://github.com/jkr2255/js_puzzle_solvers/issues">GitHubのイシュー</a>にてお知らせください。
 		</p>
     	<p>なお、このソルバーの中核となる<code>minisat.js</code>は当該ファイルへのライセンス表記の通りMITライセンスで利用可能です。また、Jkr2255が作ったその他のコードについても
@@ -92,7 +93,6 @@
     </div>
     <script src="util.js" charset="UTF-8"></script>
     <script src="numberlink.js" charset="UTF-8"></script>
-    <script src="minisat.js" charset="UTF-8" async='async'></script>
 	<script>window.twttr = (function(d, s, id) {
 	  var js, fjs = d.getElementsByTagName(s)[0],
 	    t = window.twttr || {};

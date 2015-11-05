@@ -8,6 +8,10 @@ http://opensource.org/licenses/mit-license.php
 */// 表示処理
 jQuery(function($) {
 	'use strict';
+	// 動作環境チェック
+	if(typeof Worker !== 'function' || typeof Int32Array !== 'function'){
+		alert('この環境ではJavaScriptの機能が不足していて、実行できません。');
+	}
 	var width, height;
 	var $field = $('#field');
 	var inserted_nums = [0];
