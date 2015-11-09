@@ -3,39 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <title>ナンバーリンクソルバー</title>
+    <link rel="stylesheet" href="common.css" media="all" />
     <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-    <style>
-        #field td{
-            width: 1.2em;
-            height: 1.2em;
-            text-align: center;
-            vertical-align: middle;
-            border-color: #333;
-            border-style: dotted;
-            border-width: 1px;
-        }
-        table#field{
-        	font-size: larger;
-            border-collapse: collapse;
-            border-color: #333;
-            border-style: solid;
-            border-width: 2px;
-            margin: 1em;
-        }
-        #indicator{
-        	height: 4.5em;
-        	line-height: 1.5;
-        	overflow-y: auto;
-        	border: 1px solid #ccc;
-        	margin: 20px;
-        }
-       #indicator p{
-       	margin: 0 0.5em;
-       	}
-   		fieldset{
-   			margin: 10px 0;
-   		}
-    </style>
   </head>
   <body>
     <h1>ナンバーリンクソルバー<a class="twitter-share-button"
@@ -48,7 +17,7 @@
       <input type="button" value="変更 & クリア" id='make_field_btn' />
     </div>
     <div>
-      <table id="field"></table>
+      <table id="field" class="dashed"></table>
     </div>
     <fieldset>
     	<legend>詳細設定</legend>
