@@ -1,4 +1,4 @@
-var Module={};
+var Module=self.Module={};
 importScripts('../bin/minisat.js');
 addEventListener('message',function(e){
 	'use strict';

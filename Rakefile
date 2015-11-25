@@ -18,7 +18,8 @@ CLOBBER.include dist_top
 task default: dist_top
 
 rule /gen\/.+\.js/ => tmp_js do |t|
-  sh "browserify #{t.name.pathmap('%{^gen,tmp}p')} | uglifyjs -cm > #{t.name}"
+ sh "browserify #{t.name.pathmap('%{^gen,tmp}p')} | uglifyjs -cm > #{t.name}"
+ # sh "browserify #{t.name.pathmap('%{^gen,tmp}p')} > #{t.name}"
 end
 
 rule /tmp\/.+\.js/ => "%{^tmp,src}p" do |t|

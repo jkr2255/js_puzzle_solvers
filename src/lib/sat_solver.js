@@ -41,7 +41,7 @@ class SatSolver{
 	//コールバックの返り値:falseならループ終了、SatConstraintsならそれをもとに次のループへ
 	//とりあえずそれ以外はTypeError
 	solve_loop(constraints, callback){
-		this.setListener(function(result_status, result_arr, stdout, stderr) {
+		this.setListener((result_status, result_arr, stdout, stderr) => {
 			var ret = callback(constraints, result_status, result_arr, stdout, stderr);
 			if (ret === false){
 				return;
