@@ -16,6 +16,11 @@ if (performance && performance.now) {
   };
 }
 
+// ナノ秒単位に四捨五入
+function round(num){
+  return Math.round(num * 1e6) / 1e6;
+}
+
 module.exports = class LapTimer{
   constructor(output){
     this.output = output;
@@ -27,7 +32,7 @@ module.exports = class LapTimer{
   
   lap(message){
     var current = now();
-    this.output(message + ": " + (current - this.lap_time) + " ms");
+    this.output(message + ": " + round(current - this.lap_time) + " ms");
     this.lap_time = current;
   }
   
@@ -35,7 +40,7 @@ module.exports = class LapTimer{
     if (message) {
       this.lap(message);
     }
-    this.output("合計時間: " + (this.lap_time - this.start_time) + " ms");
+    this.output("合計時間: " + round(this.lap_time - this.start_time) + " ms");
   }
   
 };
