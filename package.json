@@ -28,7 +28,8 @@
     "jquery": "global:jQuery"
   },
   "dependencies": {
+    "jquery": "^2.1.4",
     "lodash": "^3.10.1",
-    "jquery": "^2.1.4"
+    "n-dimensional-flood-fill": "^1.0.0"
   }
 }

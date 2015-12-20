@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>スリザーリンクソルバー</title>
+    <link rel="stylesheet" href="common.css" media="all" />
+    <style type="text/css" media="all">
+        #field{
+        	border-collapse:collapse;
+        	margin: 10px;
+        }
+        #field td{
+        	border: 1px none;
+        	border-left: 1px solid transparent;
+        	border-top: 1px solid transparent;
+        	width: 1.2em;
+        	height:1.2em;
+        }
+        #field .cell{
+        	width: 1.2em;
+        	height:1.2em;
+        	text-align: center;
+        	line-height: 1.2em;
+        	position: relative;
+        }
+         #field .cell::before{
+         	position: absolute;
+         	content: '';
+         	width: 3px;
+         	height: 3px;
+         	display: inline-block;
+         	top: -3px;
+         	left: -3px;
+         	background-color: #000;
+         	border-radius: 2px;
+         }
+         #field td:last-child .cell::after{
+         	position: absolute;
+         	content: '';
+         	width: 3px;
+         	height: 3px;
+         	display: inline-block;
+         	top: -3px;
+         	right:-3px;
+         	background-color: #000;
+         	border-radius: 2px;
+         }
+         #field tr:last-child .cell::before{
+         	box-shadow: 0 calc(1.2em + 3px) #000;
+         }
+         #field tr:last-child td:last-child .cell::after{
+         	box-shadow: 0 calc(1.2em + 3px) #000;
+         }
+         #field td.inside{
+         	background-color: #ff9;
+         }
+        /* セル間の横線以外はCSSで描いてしまう */
+         #field td:not(.inside) + td.inside, #field td.inside + td:not(.inside){
+         	border-left:1px solid #000;
+         }
+         #field td.inside:last-child{
+         	border-right:1px solid #000;
+         }
+         #field td.inside:first-child{
+         	border-left:1px solid #000;
+         }
+         #field tr:first-child td.inside, #field td.border-top{
+         	border-top:1px solid #000;
+         }
+         #field tr:last-child td.inside{
+         	border-bottom:1px solid #000;
+         }
+    </style>
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+   </head>
+  <body>
+    <h1>スリザーリンクソルバー<a class="twitter-share-button"
+  href="https://twitter.com/intent/tweet">
+ツイート</a></h1>
+    <div>
+      <label>幅: <input type="number" id="width" value="10" min='2' /></label>
+      ×
+      <label>高さ: <input type="number" id="height" value="10" min='2' /></label>
+      <input type="button" value="変更 & クリア" id='make_field_btn' />
+    </div>
+    <div>
+      <table id="field" class="slither"></table>
+    </div>
+    <fieldset>
+    	<legend>詳細設定</legend>
+    </fieldset>
+    <div>
+      <input type="button" value="計算開始" id='solve_btn' />
+    </div>
+    <div id="description">
+    	<p>ご意見などありましたら、作者まで適当な連絡方法あるいは
+    		<a href="https://github.com/jkr2255/js_puzzle_solvers/issues">GitHubのイシュー</a>にてお知らせください。
+		</p>
+    	<p>なお、このソルバーの中核となる<code>minisat.js</code>は当該ファイルへのライセンス表記の通りMITライセンスで利用可能です。また、Jkr2255が作ったその他のコードについても
+    		同じくMITライセンスで再利用可能です。
+		</p>
+		<p>経過の表示：</p>
+		<div id="indicator">
+			
+		</div>
+    </div>
+    <div>
+		<a href="index.html">トップに戻る</a>     
+    </div>
+    <script src="gen/slitherlink.js" charset="UTF-8"></script>
+	<script>window.twttr = (function(d, s, id) {
+	  var js, fjs = d.getElementsByTagName(s)[0],
+	    t = window.twttr || {};
+	  if (d.getElementById(id)) return t;
+	  js = d.createElement(s);
+	  js.id = id;
+	  js.src = "https://platform.twitter.com/widgets.js";
+	  fjs.parentNode.insertBefore(js, fjs);
+	 
+	  t._e = [];
+	  t.ready = function(f) {
+	    t._e.push(f);
+	  };
+	 
+	  return t;
+	}(document, "script", "twitter-wjs"));</script>
+	</body>
+</html>
