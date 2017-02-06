@@ -1,40 +1,38 @@
 'use strict';
 
-var $ = require('jquery');
+const $ = require('jquery');
 
-var PuzzleField = require('./lib/puzzle_field');
+const PuzzleField = require('./lib/puzzle_field');
 
-var environment_suitable = require('./lib/environment_check');
+const environment_suitable = require('./lib/environment_check');
 
-var LapTimer = require('./lib/lap_timer');
+const LapTimer = require('./lib/lap_timer');
 
-var Constraints = require('./lib/sat_constraints');
+const Constraints = require('./lib/sat_constraints');
 
-var _each = require('lodash/collection/each');
+const _each = require('lodash/collection/each');
 
-var Solver = require('./lib/sat_solver');
+const Solver = require('./lib/sat_solver');
 
-var _map = require('lodash/collection/map');
+const _map = require('lodash/collection/map');
 
-var set_immediate = require('./lib/set_immediate');
+const set_immediate = require('./lib/set_immediate');
 
-var comb = require('./lib/combination');
+const comb = require('./lib/combination');
 
-var _fill = require('lodash/array/fill');
+const _fill = require('lodash/array/fill');
 
 $(function () {
-  'use strict';
   if (!environment_suitable) {
     alert('この環境ではJavaScriptの機能が不足していて、実行できません。');
     return;
   }
-  var field = new PuzzleField('#field');
-  var solver = new Solver;
+  const field = new PuzzleField('#field');
+  const solver = new Solver;
   solver.loadWorker();
   $("#make_field_btn").click(function () {
-    var temp_height, temp_width;
-    temp_width = parseInt($('#width').val(), 10);
-    temp_height = parseInt($('#height').val(), 10);
+    const temp_width = parseInt($('#width').val(), 10);
+    const temp_height = parseInt($('#height').val(), 10);
     if (!(temp_width >= 2 && temp_height >= 2)) {
       alert('2×2以上で設定してください。');
       return;
@@ -64,21 +62,21 @@ $(function () {
       }
     }
   };
-  var $indicator = $('#indicator');
-  var stopwatch = new LapTimer(function (mes) {
+  const $indicator = $('#indicator');
+  const stopwatch = new LapTimer(function (mes) {
     return $('<p />').text(mes).appendTo($indicator);
   });
   $('#solve_btn').click(function () {
-    var width = field.width, height = field.height;
+    const width = field.width, height = field.height;
     stopwatch.start();
-    var constraints = new Constraints;
+    const constraints = new Constraints;
     //条件変数：
     //横線：1〜h(w-1)
     //縦線：h(w-1)+1〜h(w-1)+w(h-1)
     //横方向を内側のループで回すように
     function get_variable_num(x, y, is_vertical) {
       //number型に決め打つための変換
-      var num_x = +x;
+      const num_x = +x;
       y = +y;
       if (x < 0 || x >= width || y < 0 || y >= height) {
         throw new RangeError;
@@ -92,7 +90,7 @@ $(function () {
       }
     }
     function pos_from_variable_num(var_num) {
-      var x = 0, y = 0;
+      let x = 0, y = 0;
       var_num = + var_num;
       if (var_num <= 0) throw new RangeError;
       if (var_num <= height * (width - 1)) {
@@ -110,7 +108,7 @@ $(function () {
     }
     //あるマスにつながる最大4本の線のID配列
     function get_cell_lines(x, y) {
-      var ret = [];
+      const ret = [];
       //上
       if (y > 0) {
         ret.push(get_variable_num(x, y - 1, true));
@@ -129,11 +127,11 @@ $(function () {
       }
       return ret;
     }
-    var mashu_count = 0;
+    let mashu_count = 0;
     field.eachCell(function (val, x, y) {
-      var i = 0;
+      let i = 0;
       //まず、フィールド全体にかかる制約
-      var lines = get_cell_lines(x, y);
+      const lines = get_cell_lines(x, y);
       // 2本以下
       _each(comb(lines, 3), arr => (constraints.add([-arr[0], -arr[1], -arr[2]]), undefined));
       // 1本にならない
@@ -144,10 +142,10 @@ $(function () {
       if (val === '●') {
         ++mashu_count;
         // 外側に突き抜けられない都合上、最初に外側の余白が2マスあるかチェック
-        let verticals = [];
-        let vertical_extensions = [];
-        let horizontals = [];
-        let horizontal_extensions = [];
+        const verticals = [];
+        const vertical_extensions = [];
+        const horizontals = [];
+        const horizontal_extensions = [];
         //上
         if (y > 1) {
           verticals.push(get_variable_num(x, y - 1, true));
@@ -182,8 +180,8 @@ $(function () {
       else if (val === '○') {
         ++mashu_count;
         //縦4つ、横4つをまとめて考える（1と2の間に中心マスがある）
-        let vertical_line = [];
-        let horizontal_line = [];
+        const vertical_line = [];
+        const horizontal_line = [];
         let tmp_x = -1, tmp_y = -1;
         for (i = 0; i <= 3; ++i) {
           tmp_x = x - 2 + i;
@@ -195,8 +193,8 @@ $(function () {
             vertical_line[i] = get_variable_num(x, tmp_y, true);
           }
         }
-        let vertical_available = vertical_line[1] && vertical_line[2];
-        let horizontal_available = horizontal_line[1] && horizontal_line[2];
+        const vertical_available = vertical_line[1] && vertical_line[2];
+        const horizontal_available = horizontal_line[1] && horizontal_line[2];
         if (!(vertical_available || horizontal_available)) {
           alert('角に白丸があって、線を引けません。');
           throw new RangeError;
@@ -231,14 +229,14 @@ $(function () {
       alert('フィールドが空です。終了します。');
       return;
     }
-     
+
     // 表示のみ
     // 非同期だけど、変数束縛のためにフロントエンドを用意
     function disp_async(trues) {
       set_immediate(function () {
-        var table = [];
-        var num;
-        var x, y, is_vertical;
+        const table = [];
+        let num;
+        let x, y, is_vertical;
         const LEFT = 8, RIGHT = 4, UP = 2, DOWN = 1;
         const parts = { 3: '│', 5: '┌', 6: '└', 9: '┐', 10: '┘', 12: '─' };
         for (y = 0; y < height; ++y) {
@@ -260,20 +258,20 @@ $(function () {
         });
       });
     }
-    
+
     // 返り値はconstraintsに追加したかどうか
     function check_loop(trues_hash, constraints){
-      var checked = {};
-      var loops=[];
-      var loops_with_mashu = 0;
-      var constraint_added = false;
+      const checked = {};
+      const loops=[];
+      let loops_with_mashu = 0;
+      let constraint_added = false;
       function one_loop(start_num){
-        var current_loop=[];
-        var {x, y, is_vertical} = pos_from_variable_num(start_num);
-        var current = start_num;
-        var new_x, new_y;
-        var with_mashu = false;
-        var val, arr, i;
+        const current_loop=[];
+        let {x, y, is_vertical} = pos_from_variable_num(start_num);
+        let current = start_num;
+        let new_x, new_y;
+        let with_mashu = false;
+        let val, arr, i;
         for(;;){
           if(checked[current]) break;
           checked[current] = true;
@@ -317,27 +315,27 @@ $(function () {
           loops.push(current_loop);
         }
       }
-      for(var num in trues_hash){
+      for(const num in trues_hash){
         if(checked[num])continue;
         one_loop(num);
       }
       // 終了処理（ましゅありループが2つ以上残っていた場合、すべて潰しておく）
       if(loops_with_mashu >= 2){
         constraint_added = true;
-        for(var i=0;i<loops.length;++i){
-          constraints.add(_map(loops[i],x => -x));
+        for(let i=0;i<loops.length;++i){
+          constraints.add(_map(loops[i], x => -x));
         }
       }
       return constraint_added;
     }
-    
-    var cleared_trues = null;
+
+    let cleared_trues = null;
     solver.solve_loop(constraints, function (ret_constraints, result_status, result_arr) {
       stopwatch.lap('ソルバー');
-      var trues_hash = {};
-      var line_count = 0;
-      var not_found = result_status !== 'SAT';
-      var i;
+      const trues_hash = {};
+      let line_count = 0;
+      const not_found = result_status !== 'SAT';
+      let i;
       if (result_arr) {
         for (i = 0; i < result_arr.length; ++i) {
           if (result_arr[i] > 0) {
@@ -348,7 +346,7 @@ $(function () {
       }
       disp_async(trues_hash);
       // ループチェックは両者で必要
-      let loop_found = check_loop(trues_hash,ret_constraints);
+      const loop_found = check_loop(trues_hash, ret_constraints);
       stopwatch.lap('ループチェック');
       if (!cleared_trues) {
         if (not_found) {
@@ -365,7 +363,7 @@ $(function () {
           }
           // 別解チェックへ
           cleared_trues = trues_hash;
-          ret_constraints.add(_map(Object.keys(trues_hash),x => -x));
+          ret_constraints.add(_map(Object.keys(trues_hash), x => -x));
           return ret_constraints;
         }
       } else {

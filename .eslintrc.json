@@ -1,0 +1,29 @@
+{
+    "extends": ["eslint:recommended"],
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es6": true,
+        "node": true
+    },
+    "parserOptions": {
+        "sourceType": "script"
+    },
+    "rules": {
+        "no-const-assign": "warn",
+        "no-this-before-super": "warn",
+        "no-console": "warn",
+        "no-undef": "warn",
+        "no-unreachable": "warn",
+        "no-unused-vars": "warn",
+        "constructor-super": "warn",
+        "valid-typeof": "warn",
+        "prefer-const": "error",
+        "no-var": "warn",
+        "strict": "error",
+        "eol-last": "error",
+        "comma-spacing": "warn",
+        "indent": ["warn", 2, {"SwitchCase": 1}],
+        "semi": "error"
+    }
+}
