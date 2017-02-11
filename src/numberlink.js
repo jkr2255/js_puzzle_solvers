@@ -10,14 +10,7 @@ const timerClass = require('./lib/lap_timer');
 
 const Constraints = require('./lib/sat_constraints');
 
-const _each = require('lodash/collection/each');
-
 const Solver = require('./lib/sat_solver');
-
-const _filter = require('lodash/collection/filter');
-
-const _map = require('lodash/collection/map');
-
 
 const comb = require('./lib/combination');
 
@@ -122,8 +115,7 @@ $(function() {
         //隣接マスのどこかに同じ値
         constraints.add(neighbors);
         //隣接マス2つに同じ値は入らない
-        const pairs = comb(neighbors, 2);
-        _each(pairs, (val) => (constraints.add([-val[0], -val[1]]), undefined));
+        comb(neighbors, 2).forEach( (val) => (constraints.add([-val[0], -val[1]]), undefined));
       } else {
         let n = pos2var(x, y, 1), i;
         const same_cells = [];
@@ -131,14 +123,14 @@ $(function() {
           same_cells.push(n + i);
         }
         // 同じマスに複数の数字が入らない
-        _each(comb(same_cells, 2), (val) => (constraints.add([-val[0], -val[1]]), undefined));
+        comb(same_cells, 2).forEach((val) => (constraints.add([-val[0], -val[1]]), undefined));
         // 関西解を除外（一部の場合のみ発動）
         no_kansai.add(same_cells);
         for ( num = 1; num <= max_num; ++num) {
           const neighbors = get_neighbors(x, y, num);
           //もとから数字のないマスでは、隣接するマスのうち3マスに同じ数字が入ることはない
           let arr = comb(neighbors, 3);
-          _each(arr, (val) => (constraints.add([-val[0], -val[1], -val[2]]), undefined));
+          arr.forEach((val) => (constraints.add([-val[0], -val[1], -val[2]]), undefined));
           // ある数字が入っている場合に、隣接マスで同じ数字が入る個数はちょうど2つ
           n = pos2var(x, y, num);
           switch(neighbors.length) {
@@ -147,7 +139,7 @@ $(function() {
             // fall through
             case 4:
             // 4の場合はさっき作ったarrを流用
-              _each(arr, (val) => (constraints.add([-n, ...val]), undefined));
+              arr.forEach((val) => (constraints.add([-n, ...val]), undefined));
               break;
             case 2:
               constraints.add([-n, neighbors[0]]);
@@ -168,7 +160,7 @@ $(function() {
         alert('解が見つかりませんでした。');
         return;
       }
-      const trues = _filter(result_arr, (val) => val > 0);
+      const trues = result_arr.filter((val) => val > 0);
       const table=[];
       let kansai = false;
       let x, y, i, num, flag;
@@ -222,7 +214,7 @@ $(function() {
         return;
       }
       if($("#bypass_unique").is(':checked')) return;
-      constraints.add(_map(trues, x => -x));
+      constraints.add(trues.map(x => -x));
       solver.solve(constraints, function(result_status, result_arr, stdout, stderr){
         stopwatch.finish('別解チェック');
         alert(result_status === 'SAT' ? '別解があります。' : '一意解です。');

@@ -10,11 +10,7 @@ const LapTimer = require('./lib/lap_timer');
 
 const Constraints = require('./lib/sat_constraints');
 
-const _each = require('lodash/collection/each');
-
 const Solver = require('./lib/sat_solver');
-
-const _map = require('lodash/collection/map');
 
 const set_immediate = require('./lib/set_immediate');
 
@@ -133,10 +129,10 @@ $(function () {
       //まず、フィールド全体にかかる制約
       const lines = get_cell_lines(x, y);
       // 2本以下
-      _each(comb(lines, 3), arr => (constraints.add([-arr[0], -arr[1], -arr[2]]), undefined));
+      comb(lines, 3).forEach(arr => (constraints.add([-arr[0], -arr[1], -arr[2]]), undefined));
       // 1本にならない
       for (i = 0; i < lines.length; ++i) {
-        constraints.add(_map(lines, (val, idx) => (idx == i) ? -val : val));
+        constraints.add(lines.map((val, idx) => (idx == i) ? -val : val));
       }
       //●
       if (val === '●') {
@@ -217,10 +213,10 @@ $(function () {
         }
         // 先のマスの条件（なければ来ない or 曲がるということなので、無視していい）
         if (vertical_line[0] && vertical_line[3]) {
-          constraints.add(_map(vertical_line, x => -x));
+          constraints.add(vertical_line.map(x => -x));
         }
         if (horizontal_line[0] && horizontal_line[3]) {
-          constraints.add(_map(horizontal_line, x=> -x));
+          constraints.add(horizontal_line.map(x=> -x));
         }
       }
     });
@@ -310,7 +306,7 @@ $(function () {
         // ましゅなし or ましゅありループがすでに2つ以上の時はすぐに処理
         if(!with_mashu || loops_with_mashu >= 2){
           constraint_added = true;
-          constraints.add(_map(current_loop, v => -v));
+          constraints.add(current_loop.map(v => -v));
         } else{
           loops.push(current_loop);
         }
@@ -323,7 +319,7 @@ $(function () {
       if(loops_with_mashu >= 2){
         constraint_added = true;
         for(let i=0;i<loops.length;++i){
-          constraints.add(_map(loops[i], x => -x));
+          constraints.add(loops[i].map(x => -x));
         }
       }
       return constraint_added;
@@ -363,7 +359,7 @@ $(function () {
           }
           // 別解チェックへ
           cleared_trues = trues_hash;
-          ret_constraints.add(_map(Object.keys(trues_hash), x => -x));
+          ret_constraints.add(Object.keys(trues_hash).map( x => -x));
           return ret_constraints;
         }
       } else {

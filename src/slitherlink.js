@@ -10,11 +10,7 @@ const LapTimer = require('./lib/lap_timer');
 
 const Constraints = require('./lib/sat_constraints');
 
-const _each = require('lodash/collection/each');
-
 const Solver = require('./lib/sat_solver');
-
-const _map = require('lodash/collection/map');
 
 const _uniq = require('lodash/array/uniq');
 
@@ -103,23 +99,21 @@ $(function () {
 		//まずは定式化
 		//変数は「内側」がtrueで進める
 		//(幅+2)*y+x+1
-    let x, y, current, val;
-    let neighbors, arr;
     function pos_var(x, y) {
       return (width + 2) * y + x + 1;
     }
-    for ( y = 0; y <= height + 1; ++y) {
-      for ( x = 0; x <= width + 1; ++x) {
+    for (let y = 0; y <= height + 1; ++y) {
+      for (let x = 0; x <= width + 1; ++x) {
 				//まず、ダミーの場合を先に判定
-        current = pos_var(x, y);
+        const current = pos_var(x, y);
         if (!x || !y || (x == width + 1) || (y == height + 1)) {
           constraints.add(-current);
           continue;
         }
 				//周囲4つとも違う、ということはない
-        neighbors = [pos_var(x, y + 1), pos_var(x, y - 1), pos_var(x + 1, y), pos_var(x - 1, y)];
+        const neighbors = [pos_var(x, y + 1), pos_var(x, y - 1), pos_var(x + 1, y), pos_var(x - 1, y)];
         constraints.add(neighbors.concat([-current]))
-					.add(_map(neighbors, x => -x).concat([current]));
+					.add(neighbors.map( x => -x).concat([current]));
 				//2*2のブロックで、X字状に2つずつになることはない
 				//左端、上端は省略
         if (x > 1 && y > 1) {
@@ -127,7 +121,7 @@ $(function () {
 						.add([-current, -pos_var(x - 1, y - 1), pos_var(x, y - 1), pos_var(x - 1, y)]);
         }
 				//数字が入る場合の処理
-        val = $("#cell_" + x + '_' + y).text();
+        const val = $("#cell_" + x + '_' + y).text();
         if (val === '')
           continue;
         if (val === '0') {
@@ -143,22 +137,19 @@ $(function () {
         ++non_zero_count;
         non_zeros[current] = val;
         if (val === '1') {
-          arr = comb(neighbors, 2);
-          _each(arr, (pair) => {
+          comb(neighbors, 2).forEach((pair) => {
             constraints.add(pair.concat([-current]))
 							.add([current, -pair[0], -pair[1]]);
           });
           constraints.add(neighbors)
 						.add([-neighbors[0], -neighbors[1], -neighbors[2], -neighbors[3]]);
         } else if (val === '2') {
-          arr = comb(neighbors, 3);
-          _each(arr, (pair) => {
+          comb(neighbors, 3).forEach((pair) => {
             constraints.add(pair)
 							.add([-pair[0], -pair[1], -pair[2]]);
           });
         } else if (val === '3') {
-          arr = comb(neighbors, 2);
-          _each(arr, (pair) => {
+          comb(neighbors, 2).forEach((pair) => {
             constraints.add(pair.concat([current]))
 							.add([-current, -pair[0], -pair[1]]);
           });
@@ -203,8 +194,7 @@ $(function () {
       const onFlood = (x, y) => checked[y][x] = true;
       let added = false;
       function posvars(seed){
-        return _map(
-					floodFill({getter, seed, onFlood}).flooded,
+        return floodFill({getter, seed, onFlood}).flooded.map(
 					(arr) => pos_var(arr[0], arr[1])
 				);
       }
@@ -244,16 +234,16 @@ $(function () {
         added = true;
 				//不適当なのは外側に繋がらないもの、と明確
         whites.shift();
-        _each(whites, function(white){
+        whites.forEach(function(white){
           const linked_cells = linked(white);
-          constraints.add(white.concat(_map(linked_cells, x=>-x)));
+          constraints.add(white.concat(linked_cells.map(x=>-x)));
         });
       }
       if(blacks.length > 1){
         added = true;
-        _each(blacks, function(black){
+        blacks.forEach(function(black){
           const linked_cells = linked(black);
-          constraints.add(linked_cells.concat(_map(black, x=>-x)));
+          constraints.add(linked_cells.concat(black.map(x=>-x)));
         });
       }
       return added;
@@ -285,7 +275,7 @@ $(function () {
       }
 			// 別解探索へ
       first_found = matrix;
-      ret_constraints.add(_map(result_arr, x=> -x));
+      ret_constraints.add(result_arr.map(x=> -x));
       return ret_constraints;
     });
   });
