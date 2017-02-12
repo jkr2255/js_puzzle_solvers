@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>数独</title>
+    <link rel="stylesheet" href="common.css" media="all" />
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+  </head>
+  <body>
+    <h1>数独ソルバー<a class="twitter-share-button"
+  href="https://twitter.com/intent/tweet">
+ツイート</a></h1>
+		<sudoku-field></sudoku-field>
+		<div>
+      <input type="button" value="計算開始" id='solve_btn' />
+    </div>
+    <div id="description">
+    	<p>数独をJavaScriptで解くソルバーです。使い方は、</p>
+    	<ol>
+    		<li>下のパレットをクリックして「盤面に入れる数字」を選んでから、盤面をクリックして数字を入れる</li>
+    		<li>間違って入れた場合は、右クリックで消せます（数字の上書きも可能です）</li>
+    		<li>下の「計算開始」を押す</li>
+    	</ol>
+    	<p>という手順です。なお、いくつかの制約事項があります。</p>
+    	<ul>
+    		<li>TypedArrayやWeb Workersといった技術を使うため、Internet Explorer 9以下など、古い環境では動きません。</li>
+    		<li>別解がある場合も、1つの解のみ表示されます。</li>
+    		<li>途中経過表示はほとんど行いません。なお、バックグラウンド実行としましたので、実行中もブラウザ操作が可能です。</li>
+    	</ul>
+    	<p>ご意見などありましたら、作者まで適当な連絡方法あるいは
+    		<a href="https://github.com/jkr2255/js_puzzle_solvers/issues">GitHubのイシュー</a>にてお知らせください。
+		</p>
+    	<p>なお、このソルバーの中核となる<code>minisat.js</code>は当該ファイルへのライセンス表記の通りMITライセンスで利用可能です。また、Jkr2255が作ったその他のコードについても
+    		同じくMITライセンスで再利用可能です。
+		</p>
+		<p>経過の表示：</p>
+		<div id="indicator">
+
+		</div>
+    </div>
+    <div>
+		<a href="index.html">トップに戻る</a>
+    </div>
+    <script src="gen/sudoku.js" charset="UTF-8"></script>
+	<script>window.twttr = (function(d, s, id) {
+	  var js, fjs = d.getElementsByTagName(s)[0],
+	    t = window.twttr || {};
+	  if (d.getElementById(id)) return t;
+	  js = d.createElement(s);
+	  js.id = id;
+	  js.src = "https://platform.twitter.com/widgets.js";
+	  fjs.parentNode.insertBefore(js, fjs);
+
+	  t._e = [];
+	  t.ready = function(f) {
+	    t._e.push(f);
+	  };
+
+	  return t;
+	}(document, "script", "twitter-wjs"));</script>
+	</body>
+</html>
