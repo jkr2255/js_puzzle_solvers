@@ -16,6 +16,10 @@ const Constraints = require('./lib/sat_constraints');
 
 const comb = require('./lib/combination');
 
+const make_matrix = require('./lib/make_matrix');
+
+const setImmediate = require('./lib/set_immediate');
+
 $(() => {
   if (!environment_suitable) {
     alert('この環境ではJavaScriptの機能が不足していて、実行できません。');
@@ -40,11 +44,11 @@ $(() => {
       const row_col = (val - num) / 9;
       return [Math.floor(row_col / 9), row_col % 9, num];
     }
-    const fieldData = field.data;
+    const originalField = field.data;
     // 変数位置のセット
     for(let r = 0; r < 9 ; ++r) {
       for(let c = 0; c < 9; ++c) {
-        if(fieldData[r][c]) constraints.add(toValueNum(r, c, +fieldData[r][c]));
+        if(originalField[r][c]) constraints.add(toValueNum(r, c, +originalField[r][c]));
       }
     }
     // それ以外の条件生成
@@ -85,16 +89,47 @@ $(() => {
         return;
       }
       const trues = result_arr.filter((val) => val > 0);
-      trues.forEach(val => {
-        const [row, col, num] = fromValueNum(val);
-        fieldData[row][col] = num;
-      });
-      field.update();
+      function dataFromTrues(arr) {
+        const fieldData = make_matrix(9, 9, '');
+        arr.forEach(val => {
+          const [row, col, num] = fromValueNum(val);
+          fieldData[row][col] = num;
+        });
+        return fieldData;
+      }
+      const fieldData = dataFromTrues(trues);
+      field.update({data: fieldData});
       stopwatch.lap('出力');
       constraints.add(trues.map(x => -x));
       solver.solve(constraints, function(result_status, result_arr, stdout, stderr){
-        stopwatch.finish('別解チェック');
-        alert(result_status === 'SAT' ? '別解があります。' : '一意解です。');
+        if(result_status !== 'SAT') {
+          stopwatch.finish('別解チェック');
+          alert( '一意解です。');
+          return;
+        }
+        if($('#others_reset').is(':checked')){
+          stopwatch.finish('別解チェック');
+          alert('別解があります。');
+          field.update({data: originalField});
+          return;
+        }
+        // 判明する限りのマスを埋める
+        stopwatch.lap('確定マスの抽出');
+        let matchedCells = result_arr.filter((val) => val > 0 && trues.indexOf(val) !== -1);
+        constraints.add(matchedCells.map(x => -x));
+        setImmediate(() => field.update({data: dataFromTrues(matchedCells)}));
+        solver.solve_loop(constraints, function(_, result_status, result_arr, stdout, stderr){
+          if(result_status === 'UNSAT') {
+            stopwatch.finish('完了');
+            alert('別解があります。');
+            return false;
+          }
+          stopwatch.lap('確定マスの抽出');
+          matchedCells = result_arr.filter((val) => val > 0 && matchedCells.indexOf(val) !== -1);
+          setImmediate(() => field.update({data: dataFromTrues(matchedCells)}));
+          constraints.add(matchedCells.map(x => -x));
+          return constraints;
+        });
       });
     });
   });

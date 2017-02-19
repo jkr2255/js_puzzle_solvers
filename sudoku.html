@@ -11,7 +11,12 @@
   href="https://twitter.com/intent/tweet">
 ツイート</a></h1>
 		<sudoku-field></sudoku-field>
-		<div>
+    <fieldset>
+    	<legend>詳細設定</legend>
+			別解のあった場合：
+    	<label><input type="radio" name="others" id="others_reset" checked> 元に戻す</label>
+			<label><input type="radio" name="others"> 決まるところは埋める</label>
+    </fieldset>		<div>
       <input type="button" value="計算開始" id='solve_btn' />
     </div>
     <div id="description">
@@ -24,7 +29,6 @@
     	<p>という手順です。なお、いくつかの制約事項があります。</p>
     	<ul>
     		<li>TypedArrayやWeb Workersといった技術を使うため、Internet Explorer 9以下など、古い環境では動きません。</li>
-    		<li>別解がある場合も、1つの解のみ表示されます。</li>
     		<li>途中経過表示はほとんど行いません。なお、バックグラウンド実行としましたので、実行中もブラウザ操作が可能です。</li>
     	</ul>
     	<p>ご意見などありましたら、作者まで適当な連絡方法あるいは
