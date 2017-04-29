@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>美術館</title>
+    <link rel="stylesheet" href="common.css" media="all" />
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+  </head>
+  <body>
+    <h1>美術館ソルバー<a class="twitter-share-button"
+  href="https://twitter.com/intent/tweet">
+ツイート</a></h1>
+		<akari-field></akari-field>
+    <fieldset>
+    	<legend>詳細設定</legend>
+			別解のあった場合：
+    	<label><input type="radio" name="others" id="others_reset" checked> 元に戻す</label>
+			<label><input type="radio" name="others"> 決まるところは埋める</label>
+    </fieldset>
+		<div>
+      <input type="button" value="計算開始" id='solve_btn' />
+    </div>
+		<p>経過の表示：</p>
+		<div id="indicator">
+
+		</div>
+    </div>
+    <div>
+		<a href="index.html">トップに戻る</a>
+    </div>
+    <script src="gen/akari.js" charset="UTF-8"></script>
+	<script>window.twttr = (function(d, s, id) {
+	  var js, fjs = d.getElementsByTagName(s)[0],
+	    t = window.twttr || {};
+	  if (d.getElementById(id)) return t;
+	  js = d.createElement(s);
+	  js.id = id;
+	  js.src = "https://platform.twitter.com/widgets.js";
+	  fjs.parentNode.insertBefore(js, fjs);
+
+	  t._e = [];
+	  t.ready = function(f) {
+	    t._e.push(f);
+	  };
+
+	  return t;
+	}(document, "script", "twitter-wjs"));</script>
+	</body>
+</html>
