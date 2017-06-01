@@ -17,24 +17,28 @@ CLOBBER.include dist_top
 
 task default: dist_top
 
+SEP = File::ALT_SEPARATOR || File::SEPARATOR
+
+NPM_BIN_PATH = "node_modules#{SEP}.bin#{SEP}"
+
 rule %r{gen/.+\.js} => tmp_js do |t|
-  sh "browserify #{t.name.pathmap('%{^gen,tmp}p')} | uglifyjs -cm > #{t.name}"
+  sh "#{NPM_BIN_PATH}browserify #{t.name.pathmap('%{^gen,tmp}p')} | #{NPM_BIN_PATH}uglifyjs -cm > #{t.name}"
   # sh "browserify #{t.name.pathmap('%{^gen,tmp}p')} > #{t.name}"
 end
 
 rule %r{tmp/.+\.js} => '%{^tmp,src}p' do |t|
   mkpath t.name.pathmap('%d')
-  sh "babel #{t.source} -o #{t.name}"
+  sh "#{NPM_BIN_PATH}babel #{t.source} -o #{t.name}"
 end
 
 rule %r{tmp/.+\.js} => '%{^tmp,src}X.coffee' do |t|
   path = t.name.pathmap('%d')
   mkpath path
-  sh "coffee -bco #{path} #{t.source}"
+  sh "#{NPM_BIN_PATH}coffee -bco #{path} #{t.source}"
 end
 
 rule %r{tmp/.+\.js} => '%{^tmp,src}X.tag' do |t|
   path = t.name.pathmap('%d')
   mkpath path
-  sh "riot -m -t es6 #{t.source} #{path}"
+  sh "#{NPM_BIN_PATH}riot -m -t es6 #{t.source} #{path}"
 end
