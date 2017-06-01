@@ -16,7 +16,7 @@ const set_immediate = require('./lib/set_immediate');
 
 const comb = require('./lib/combination');
 
-const _fill = require('lodash/array/fill');
+const _fill = require('lodash/fill');
 
 $(function () {
   if (!environment_suitable) {

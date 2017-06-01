@@ -12,9 +12,9 @@ const Constraints = require('./lib/sat_constraints');
 
 const Solver = require('./lib/sat_solver');
 
-const _uniq = require('lodash/array/uniq');
+const _uniq = require('lodash/uniq');
 
-const _diff = require('lodash/array/difference');
+const _diff = require('lodash/difference');
 
 const set_immediate = require('./lib/set_immediate');
 
