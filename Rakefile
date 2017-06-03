@@ -31,12 +31,6 @@ rule %r{tmp/.+\.js} => '%{^tmp,src}p' do |t|
   sh "#{NPM_BIN_PATH}babel #{t.source} -o #{t.name}"
 end
 
-rule %r{tmp/.+\.js} => '%{^tmp,src}X.coffee' do |t|
-  path = t.name.pathmap('%d')
-  mkpath path
-  sh "#{NPM_BIN_PATH}coffee -bco #{path} #{t.source}"
-end
-
 rule %r{tmp/.+\.js} => '%{^tmp,src}X.tag' do |t|
   path = t.name.pathmap('%d')
   mkpath path
