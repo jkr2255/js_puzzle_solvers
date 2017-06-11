@@ -1,6 +1,7 @@
 'use strict';
 
 const riot = require('riot');
+const ready = require('./lib/ready');
 
 require('./tags/sudoku-field');
 require('./tags/indicator');
@@ -8,8 +9,6 @@ require('./tags/indicator');
 const environment_suitable = require('./lib/environment_check');
 
 const LapTimer = require('./lib/lap_timer');
-
-const $ = require('jquery');
 
 const Solver = require('./lib/sat_solver');
 
@@ -21,7 +20,7 @@ const make_matrix = require('./lib/make_matrix');
 
 const setImmediate = require('./lib/set_immediate');
 
-$(() => {
+ready(() => {
   if (!environment_suitable) {
     alert('この環境ではJavaScriptの機能が不足していて、実行できません。');
     return;
@@ -31,7 +30,7 @@ $(() => {
   const stopwatch = new LapTimer(indicator.log.bind(indicator));
   const solver = new Solver;
   solver.loadWorker();
-  $('#solve_btn').click(function () {
+  document.getElementById('solve_btn').addEventListener('click', function () {
     indicator.clear();
     stopwatch.start();
     field.creating = false;
@@ -110,7 +109,7 @@ $(() => {
           alert( '一意解です。');
           return;
         }
-        if($('#others_reset').is(':checked')){
+        if(document.getElementById('others_reset').checked){
           stopwatch.finish('別解チェック');
           alert('別解があります。');
           field.update({data: originalField});
@@ -135,5 +134,5 @@ $(() => {
         });
       });
     });
-  });
+  }, false);
 });
