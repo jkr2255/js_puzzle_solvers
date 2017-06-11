@@ -34,6 +34,9 @@ $(() => {
   solver.loadWorker();
   $('#solve_btn').click(function () {
     stopwatch.start();
+    field.creating = false;
+    field.clearAnswer();
+    field.update();
     const constraints = new Constraints;
     // 変数番号：row * 81 + col * 9 + num
     function toValueNum(row, col, num) {

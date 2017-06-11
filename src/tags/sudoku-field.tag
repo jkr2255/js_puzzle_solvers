@@ -1,8 +1,15 @@
 <sudoku-field>
+    <div class="control">
+        操作モード：
+        <label><input type="radio" name=creating value=1 checked={creating} onchange={onCreatingChange} ref=creatingRadio> 作問</label>
+        <label><input type="radio" name=creating value=0 checked={!creating} onchange={onCreatingChange}> 解答</label>
+        <button type=button onclick={allClear}>全クリア</button>
+        <button type=button onclick={clearAnswer}>解答をクリア</button>
+    </div>
     <table>
-        <tr each={row, row_num in data} class={top: row_num % 3 === 0, bottom: (row_num + 1) % 3 === 0}>
+        <tr each={row, row_num in data} class={top: row_num % dimension === 0, bottom: (row_num + 1) % dimension === 0}>
             <td each={item, col_num in row}
-                class={left: col_num % 3 === 0, right: (col_num + 1) % 3 === 0}
+                class={left: col_num % dimension === 0, right: (col_num + 1) % dimension === 0, question: isQuestion[row_num][col_num]}
                 data-row={row_num} data-col={col_num}
                 onclick={clicked} oncontextmenu={clear}
             >{item}</td>
@@ -18,6 +25,9 @@
     </table>
 
     <style>
+        div.control{
+            margin: 5px 0;
+        }
         table{
             border-collapse: collapse;
         }
@@ -43,32 +53,57 @@
         td.selected{
             background-color: #ffb;
         }
+        td.question{
+            font-weight: bold;
+            color: #008;
+        }
     </style>
 
     <script>
-        this.dimension = 3;
-        const width = this.dimension * this.dimension;
-        this.numbers = Array.from({length: width}, (_, k) => k + 1);
+        const tag = this;
+        tag.dimension = 3;
+        tag.creating = true;
+        const width = tag.dimension * tag.dimension;
+        tag.numbers = Array.from({length: width}, (_, k) => k + 1);
         const make_matrix = require('../lib/make_matrix');
-        this.data = opts.data || make_matrix(width, width, '');
-        this.selected = '';
-        this.clicked = (e) => {
+        tag.data = opts.data || make_matrix(width, width, '');
+        tag.isQuestion = opts.isQuestion || make_matrix(width, width, false);
+        tag.selected = '';
+        tag.clicked = (e) => {
             const row = e.target.dataset.row, col = e.target.dataset.col;
-            if(this.selected){
-                this.data[row][col] = this.selected;
+            if(!tag.creating && tag.isQuestion[row][col]) return;
+            if(tag.selected){
+                tag.data[row][col] = tag.selected;
+                tag.isQuestion[row][col] = tag.creating;
             }
         };
-        this.selectPalette = (e) => {
-            if(e.item.number == this.selected){
-                this.selected = '';
+        tag.selectPalette = (e) => {
+            if(e.item.number == tag.selected){
+                tag.selected = '';
             }else{
-                this.selected = e.item.number;
+                tag.selected = e.item.number;
             }
         };
-        this.clear = (e) => {
+        tag.clear = (e) => {
             const row = e.target.dataset.row, col = e.target.dataset.col;
-            this.data[row][col] = '';
+            if(!tag.creating && tag.isQuestion[row][col]) return;
+            tag.data[row][col] = '';
+            tag.isQuestion[row][col] = false;
             e.preventDefault();
         };
+        tag.onCreatingChange = (e) => {
+            tag.creating = tag.refs.creatingRadio.checked;
+        };
+        tag.allClear = () => {
+            tag.data = make_matrix(width, width, '');
+            tag.isQuestion = make_matrix(width, width, false);
+        }
+        tag.clearAnswer = () => {
+            for(let r = 0; r < width; ++r){
+                for(let c = 0; c < width; ++c) {
+                    if(!tag.isQuestion[r][c]) tag.data[r][c] = '';
+                }
+            }
+        }
     </script>
 </sudoku-field>
