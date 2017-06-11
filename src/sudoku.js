@@ -3,6 +3,7 @@
 const riot = require('riot');
 
 require('./tags/sudoku-field');
+require('./tags/indicator');
 
 const environment_suitable = require('./lib/environment_check');
 
@@ -26,13 +27,12 @@ $(() => {
     return;
   }
   const field = riot.mount('sudoku-field')[0];
-  const $indicator = $('#indicator');
-  const stopwatch = new LapTimer(function (mes) {
-    return $('<p />').text(mes).appendTo($indicator);
-  });
+  const indicator = riot.mount('indicator')[0];
+  const stopwatch = new LapTimer(indicator.log.bind(indicator));
   const solver = new Solver;
   solver.loadWorker();
   $('#solve_btn').click(function () {
+    indicator.clear();
     stopwatch.start();
     field.creating = false;
     field.clearAnswer();
