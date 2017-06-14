@@ -64,7 +64,8 @@
         tag.dimension = 3;
         tag.creating = true;
         const width = tag.dimension * tag.dimension;
-        tag.numbers = Array.from({length: width}, (_, k) => k + 1);
+        var numbers = tag.numbers = [];
+        for(let i = 1; i <= width; ++i) numbers.push(i);
         const make_matrix = require('../lib/make_matrix');
         tag.data = opts.data || make_matrix(width, width, '');
         tag.isQuestion = opts.isQuestion || make_matrix(width, width, false);
