@@ -15,7 +15,7 @@
     "babel-preset-es2015-riot": "^1.1.0",
     "browserify": "^14.4.0",
     "browserify-shim": "^3.8.14",
-    "uglify-js": "^3.0.15"
+    "uglify-js": "^3.0.27"
   },
   "browserify": {
     "transform": [
@@ -29,6 +29,6 @@
     "jquery": "^2.1.4",
     "lodash": "^4.17.4",
     "n-dimensional-flood-fill": "^1.0.0",
-    "riot": "^3.5.1"
+    "riot": "^3.6.1"
   }
 }
