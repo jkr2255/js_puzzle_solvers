@@ -20,7 +20,8 @@
     "riot-tag-loader": "^1.0.0",
     "uglify-js": "^3.0.28",
     "uglifyjs-webpack-plugin": "^0.4.6",
-    "webpack": "^3.5.5"
+    "webpack": "^3.5.5",
+    "webpack-merge": "^4.1.0"
   },
   "browserify": {
     "transform": [
@@ -37,6 +38,7 @@
     "riot": "^3.6.3"
   },
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "watch": "webpack --config webpack.config.watch.js"
   }
 }
