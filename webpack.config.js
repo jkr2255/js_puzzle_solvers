@@ -21,7 +21,6 @@ module.exports = {
     filename: '[name].js',
     path: path.join(__dirname, 'gen')
   },
-  devtool: 'sourcemap',
   module: {
     rules: [
       {
@@ -41,7 +40,8 @@ module.exports = {
     ]
   },
   externals: {
-    jquery: 'jQuery'
+    jquery: 'jQuery',
+    riot: 'riot'
   },
   resolve: {
     extensions: [".js", ".tag"]
